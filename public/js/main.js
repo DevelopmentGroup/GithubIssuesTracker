@@ -10,11 +10,11 @@ jQuery.getIssues = function(username, repoName, pageNumber, callback) {
 }
 
 //Displays up to 30 latest issues into the target div
-jQuery.fn.getAndDisplayIssues = function(username, repoName) {
+jQuery.fn.getAndDisplayIssues = function(username, repoName, pageNumber) {
     this.html("<span>Getting issues for " + username +"'s project " + repoName + ".</span>");
      
     var target = this;
-    $.getIssues(username, repoName, 1, function(data) {
+    $.getIssues(username, repoName, pageNumber, function(data) {
         var repos = data; // JSON Parsing
 
         //check if the project has no issues.
@@ -79,11 +79,44 @@ jQuery.fn.getAndDisplayIssues = function(username, repoName) {
     } 
 };
 
-
+//calls getAndDisplayIssues with parameters pulled from the data input fields "input-owner" and "input-repo-name"
 function submitTargetRepo(){
 	console.log("ran");
 	var inputOwner = $("#input-owner").val();
 	var inputRepoName = $("#input-repo-name").val();
 	console.log(inputOwner);
-	$("#issues-list").getAndDisplayIssues(inputOwner, inputRepoName);
+	$("#issues-list").getAndDisplayIssues(inputOwner, inputRepoName, 1);
+}
+
+//validates a Github username (from the input field "input-owner") and returns a boolean.
+function validateGithubUsername(){
+	var username = $("#input-owner").val();
+	$.getUser(username, function(data) {
+        var repos = data; // JSON Parsing
+		console.log(repos);
+
+        //check if the user is valid
+        if(Object.keys(data).length >= 4){
+        	alert("Valid user!");
+        }
+      });
+    
+}
+
+//Constructs a request for a Github user from the following parameters: username
+jQuery.getUser = function(username, callback) {
+	//jQuery.getJSON('https://api.github.com/users/' + username, callback);
+
+	$.ajax({
+    url: 'https://api.github.com/users/' + username,
+    dataType: "json",
+    success: function(data){
+      alert('success');
+    },
+    error: function(data){
+      alert('error');
+    },
+    complete: function(data) {
+      //alert('complete')
+    }})
 }
