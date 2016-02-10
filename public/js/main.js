@@ -28,11 +28,16 @@ jQuery.fn.getAndDisplayIssues = function(username, repoName, pageNumber) {
         target.empty().append(list);
         $(repos).each(function() {
             if (this.name != (username.toLowerCase()+'.github.com')) {
+            	list.append('<dd><img width=50px height=50px src=' + this.user.avatar_url +'></dd>');
                 list.append('<dt><a href="'+ (this.homepage?this.homepage:this.html_url) +'">' + this.title + '</a> <em>'+(this.language?('('+this.language+')'):'')+'</em></dt>');
                 var trimmedBody = trimStringLength(this.body);
+                for (var i = 0; i < this.labels.length; i++){
+                	list.append('<dd><span style=color:this.labels[i].color>label:' + this.labels[i].name + '</span></dd>');
+                }
                 list.append('<dd>' + trimmedBody +'</dd>');
-                list.append('<dd>' + this.updated_at + '</dd>');
+                //list.append('<dd>' + this.updated_at + '</dd>');
                 list.append('<dd>#' + this.number + '</dd>');
+                //console.log(this.user.avatar_url);
                 list.append('</br>');
             }
         });      
@@ -111,10 +116,10 @@ jQuery.getUser = function(username, callback) {
     url: 'https://api.github.com/users/' + username,
     dataType: "json",
     success: function(data){
-      alert('success');
+      $("#valid-user-icon").attr("src", "https://cdn0.iconfinder.com/data/icons/weboo-2/512/tick.png");
     },
     error: function(data){
-      alert('error');
+      $("#valid-user-icon").attr("src", "https://cdn4.iconfinder.com/data/icons/icocentre-free-icons/114/f-cross_256-128.png");
     },
     complete: function(data) {
       //alert('complete')
