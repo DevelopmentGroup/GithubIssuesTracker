@@ -37,7 +37,7 @@ jQuery.fn.getAndDisplayIssues = function(username, repoName, pageNumber) {
                 $(targetDiv).append('<a href="'+ (this.homepage?this.homepage:this.html_url) +'">' +'#' + this.number + ": " + this.title + '</a> <em>'+(this.language?('('+this.language+')'):'')+'</em>&nbsp;&nbsp;&nbsp;&nbsp;');
                 
                 for (var i = 0; i < this.labels.length; i++){
-                	$(targetDiv).append('<span style=color:this.labels[i].color>label:' + this.labels[i].name + '</span>');
+                	$(targetDiv).append('<span style=color:' + this.labels[i].color+ '>label:' + this.labels[i].name + '</span>');
                 }
                 $(targetDiv).append('<br>' + trimmedBody + '');
                 //console.log(this.user.avatar_url);
@@ -108,7 +108,7 @@ function validateGithubUsername(){
 
         //check if the user is valid
         if(Object.keys(data).length >= 4){
-        	alert("Valid user!");
+        	//alert("Valid user!");
         }
       });
     
@@ -154,4 +154,66 @@ $.urlParam = function(name){
     else{
        return results[1] || 0;
     }
+}
+
+function getSingleIssue(owner, repoName, issueNumber){
+	$("#issues-list").getSingleIssueJQ(owner, repoName,issueNumber);
+}
+
+jQuery.fn.getSingleIssueJQ = function(owner, repoName, issueNumber) {
+	//jQuery.getJSON('https://api.github.com/users/' + username, callback);
+
+	$.ajax({
+    url: 'https://api.github.com/repos/' + owner + '/' + repoName + '/issues/' + issueNumber,
+    dataType: "json",
+    success: function(data){
+      console.log(data);
+      var target = this;
+      var list = $('#issue');
+      var formattedBody = codeFormatText(data.body);
+      // target.empty().append(list);
+      if (data.name != (owner.toLowerCase()+'.github.com')) {
+            	list.append('<div class=\'card card-2\' style=\'padding-top:1em\'><div class=\'row\' style=\'margin:3em;\'><div class=\"col-sm-4\"><img width=250px height=250px src=' + data.user.avatar_url +'></div><div class=\"col-sm-8\" style=\'white-space:pre-wrap;font-size:2.5em; padding-left:1em\'><div id=\'targetTitle\'></div></div><div class=\'row\'><div class=\'col-md-12\'><div id=\'targetDiv' + '\'></div></div></div></br>'+'</div></div>');
+                var targetDiv = "#targetDiv";
+                //console.log(targetDiv);
+                $('#targetTitle').append('<a href="'+ (data.homepage?data.homepage:data.html_url) +'">' +'#' + data.number + "<br>" + data.title + '</a> <em>'+(data.language?('('+data.language+')'):'')+'</em>&nbsp;&nbsp;&nbsp;&nbsp;');
+                
+                for (var i = 0; i < data.labels.length; i++){
+                	$(targetDiv).append('<span style=color:' + data.labels[i].color> + 'label:' + data.labels[i].name + '</span>');
+                }
+                $(targetDiv).append('<br><div style=\'white-space:pre-wrap\'>' + formattedBody + '</div>');
+                //console.log(this.user.avatar_url);
+                // list.append('</div></br>'+'</div>')
+            }
+
+    },
+    error: function(data){
+      $("#valid-user-icon").attr("src", "https://cdn4.iconfinder.com/data/icons/icocentre-free-icons/114/f-cross_256-128.png");
+    },
+    complete: function(data) {
+      //alert('complete')
+    }})
+}
+
+
+//This function takes an input string and returns a string where ''' has been correctly replaced with the <pre><code> tag(s)
+function codeFormatText(input){
+	//var p = '%22';
+	var first = true;
+
+
+	while (input.indexOf("```") != -1){
+		if(first == true){
+			input = input.replace("```", "<pre><code>");
+			//console.log(true);
+			first = false;
+		} else {
+			input = input.replace("```", "</code></pre>");
+			first = true;
+		}
+	}
+	//var x = input.indexOf("```");
+	//console.log("HERE: " + x);
+	console.log(input);
+	return input;
 }
