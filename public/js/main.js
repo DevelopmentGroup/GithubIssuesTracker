@@ -34,7 +34,7 @@ jQuery.fn.getAndDisplayIssues = function(username, repoName, pageNumber) {
             	list.append('<div class=\'card card-1\'><div class=\'row\' style=\'margin:3em;\'><div style=\'\' class=\"col-sm-2\"><img width=75px height=75px src=' + this.user.avatar_url +'></div><div class=\"col-sm-10\"><div id=\'target' + counterX + '\'></div>' + '</div></br>'+'</div></div>');
                 var targetDiv = "#target" + counterX;
                 //console.log(targetDiv);
-                $(targetDiv).append('<a href="'+ (this.homepage?this.homepage:this.html_url) +'">' +'#' + this.number + ": " + this.title + '</a> <em>'+(this.language?('('+this.language+')'):'')+'</em>&nbsp;&nbsp;&nbsp;&nbsp;');
+                $(targetDiv).append('<a href="'+ './issue.html?number=' + this.number + '&owner=' + username + '&repo=' + repoName +'">' +'#' + this.number + ": " + this.title + '</a> <em>'+(this.language?('('+this.language+')'):'')+'</em>&nbsp;&nbsp;&nbsp;&nbsp;');
                 
                 for (var i = 0; i < this.labels.length; i++){
                 	$(targetDiv).append('<span style=color:' + this.labels[i].color+ '>label:' + this.labels[i].name + '</span>');
@@ -171,12 +171,19 @@ jQuery.fn.getSingleIssueJQ = function(owner, repoName, issueNumber) {
       var target = this;
       var list = $('#issue');
       var formattedBody = codeFormatText(data.body);
+
+      // var state;
+      // if(data.state == "open"){
+      // 	state 
+      // } else {
+
+      // }
       // target.empty().append(list);
       if (data.name != (owner.toLowerCase()+'.github.com')) {
             	list.append('<div class=\'card card-2\' style=\'padding-top:1em\'><div class=\'row\' style=\'margin:3em;\'><div class=\"col-sm-4\"><img width=250px height=250px src=' + data.user.avatar_url +'></div><div class=\"col-sm-8\" style=\'white-space:pre-wrap;font-size:2.5em; padding-left:1em\'><div id=\'targetTitle\'></div></div><div class=\'row\'><div class=\'col-md-12\'><div id=\'targetDiv' + '\'></div></div></div></br>'+'</div></div>');
                 var targetDiv = "#targetDiv";
                 //console.log(targetDiv);
-                $('#targetTitle').append('<a href="'+ (data.homepage?data.homepage:data.html_url) +'">' +'#' + data.number + "<br>" + data.title + '</a> <em>'+(data.language?('('+data.language+')'):'')+'</em>&nbsp;&nbsp;&nbsp;&nbsp;');
+                $('#targetTitle').append('<a href="'+ (data.homepage?data.homepage:data.html_url) +'">' +'#' + data.number + "<br>" + data.title + '</a> <em></br>' +data.state +(data.language?('('+data.language+')'):'')+'</em>&nbsp;');
                 
                 for (var i = 0; i < data.labels.length; i++){
                 	$(targetDiv).append('<span style=color:' + data.labels[i].color> + 'label:' + data.labels[i].name + '</span>');
@@ -214,6 +221,6 @@ function codeFormatText(input){
 	}
 	//var x = input.indexOf("```");
 	//console.log("HERE: " + x);
-	console.log(input);
+	//console.log(input);
 	return input;
 }
