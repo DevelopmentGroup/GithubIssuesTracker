@@ -52,10 +52,6 @@ jQuery.fn.getAndDisplayIssues = function(username, repoName, pageNumber) {
         }
         sortByUpdateDate(repos);
         console.log(repos);
-
-
-
-           
      
         var list = $('<dl/>');
         target.empty().append(list);
@@ -68,7 +64,7 @@ jQuery.fn.getAndDisplayIssues = function(username, repoName, pageNumber) {
             	list.append('<div class=\'card card-1\' style=\'margin:3em;\'><div class=\'row\' style=\'margin:0em;\'><div style=\'padding-left:0px;\' class=\"col-sm-3\"><a href=\''+this.user.html_url +'\'><img width=100% height=100% src=' + this.user.avatar_url +'></a></div><div class=\"col-sm-9\"><div id=\'target' + counterX + '\'></div>' + '</div></br>'+'</div></div>');
                 var targetDiv = "#target" + counterX;
                 //console.log(targetDiv);
-                $(targetDiv).append('<div style=\'font-size:1.3em\'><a href="'+ './issue.html?number=' + this.number + '&owner=' + username + '&repo=' + repoName +'">' +'#' + this.number + ": " + this.title + '</a> <em>'+(this.language?('('+this.language+')'):'')+'</em></div>');
+                $(targetDiv).append('<div style=\'font-size:1.3em\'>'+ this.user.login +', <a href="'+ './issue.html?number=' + this.number + '&owner=' + username + '&repo=' + repoName +'">' +'#' + this.number + ": " + this.title + '</a> <em>'+(this.language?('('+this.language+')'):'')+'</em></div>');
                 
                 if(this.labels.length > 1){
                 	$(targetDiv).append('<br>labels: ');
@@ -248,10 +244,10 @@ jQuery.fn.getSingleIssueJQ = function(owner, repoName, issueNumber) {
       // }
       // target.empty().append(list);
       if (data.name != (owner.toLowerCase()+'.github.com')) {
-            	list.append('<div class=\'card card-2\' style=\'padding-top:1em\'><div class=\'row\' style=\'margin:3em;\'><div class=\"col-sm-4\"><img width=250px height=250px src=' + data.user.avatar_url +'></div><div class=\"col-sm-8\" style=\'font-size:2.5em; padding-left:1em\'><div id=\'targetTitle\'></div></div><div class=\'row\'><div class=\'col-md-12\'><div id=\'targetDiv' + '\'></div></div></div></br>'+'</div></div>');
+            	list.append('<div class=\'card card-2\' style=\'padding-top:1em\'><div class=\'row\' style=\'margin:3em;\'><div class=\"col-sm-4\"><a href=\''+data.user.html_url +'\'><img width=250px height=250px src=' + data.user.avatar_url +'></a></div><div class=\"col-sm-8\" style=\'font-size:2.5em; padding-left:1em\'><div id=\'targetTitle\'></div></div><div class=\'row\'><div class=\'col-md-12\'><div id=\'targetDiv' + '\'></div></div></div></br>'+'</div></div>');
                 var targetDiv = "#targetDiv";
                 //console.log(targetDiv);
-                $('#targetTitle').append('<a href="'+ (data.homepage?data.homepage:data.html_url) +'">' +'#' + data.number + "<br>" + data.title + '</a> <em></br>' +data.state +(data.language?('('+data.language+')'):'')+'</em>&nbsp;<br><br><br>');
+                $('#targetTitle').append('<a href="'+ (data.homepage?data.homepage:data.html_url) +'">' + data.user.login +'<br>#' + data.number + ": " + data.title + '</a> <em></br>' +data.state +(data.language?('('+data.language+')'):'')+'</em>&nbsp;<br><br><br>');
                 
                 if(data.labels.length > 1){
                 	$(targetDiv).append('labels: ');
@@ -272,6 +268,10 @@ jQuery.fn.getSingleIssueJQ = function(owner, repoName, issueNumber) {
             		//do nothing
             	}
                 $(targetDiv).append('<br><br><br><div style=\'white-space:pre-wrap\'>' + formattedBody + '</div>');
+
+
+
+                // list.append('<div class=\'card card-2\' style=\'padding-top:1em\'><div class=\'row\' style=\'margin:3em;\'><div class=\"col-sm-4\"><a href=\''+data.user.html_url +'\'><img width=250px height=250px src=' + data.user.avatar_url +'></a></div><div class=\"col-sm-8\" style=\'font-size:2.5em; padding-left:1em\'><div id=\'targetTitle\'></div></div><div class=\'row\'><div class=\'col-md-12\'><div id=\'targetDiv' + '\'></div></div></div></br>'+'</div></div>');
                 //console.log(this.user.avatar_url);
                 // list.append('</div></br>'+'</div>')
             }
@@ -285,8 +285,40 @@ jQuery.fn.getSingleIssueJQ = function(owner, repoName, issueNumber) {
     }})
 }
 
+//fetches the comments and displays them TODO
+function getComments(commentURL){
+	$.ajax({
+    url: commentURL,
+    dataType: "json",
+    success: function(data){
+      var list = $('comments');
 
-//This function takes an input string and returns a string where ''' has been correctly replaced with the <pre><code> tag(s). Also checks for bold.
+      $(data).each(function() {
+        	counterX++;
+        	var formattedBody = codeFormatText(this.body); 
+            if (this.name != (username.toLowerCase()+'.github.com')) {
+            	var trimmedBody = trimStringLength(formattedBody);
+            	list.append('<div class=\'card card-1\' style=\'margin:3em;\'><div class=\'row\' style=\'margin:0em;\'><div style=\'padding-left:0px;\' class=\"col-sm-3\"><a href=\''+this.user.html_url +'\'><img width=100% height=100% src=' + this.user.avatar_url +'></a></div><div class=\"col-sm-9\"><div id=\'target' + counterX + '\'></div>' + '</div></br>'+'</div></div>');
+                var targetDiv = "#target" + counterX;
+                //console.log(targetDiv);
+                $(targetDiv).append('<div style=\'font-size:1.3em\'>'+ this.user.login +', <a href="'+ './issue.html?number=' + this.number + '&owner=' + username + '&repo=' + repoName +'">' +'#' + this.number + ": " + this.title + '</a> <em>'+(this.language?('('+this.language+')'):'')+'</em></div>');
+                
+                $(targetDiv).append('<br></br><div style=\'white-space:pre-wrap\'>' + trimmedBody + '</div>');
+                //console.log(this.user.avatar_url);
+                // list.append('</div></br>'+'</div>')
+            }
+        });      
+    },
+    error: function(data){
+      $("#valid-user-icon").attr("src", "https://cdn4.iconfinder.com/data/icons/icocentre-free-icons/114/f-cross_256-128.png");
+    },
+    complete: function(data) {
+      //alert('complete')
+    }})
+}
+
+
+//This function takes an input string and returns a string where ''' has been correctly replaced with the <pre><code> tag(s). Also checks for bold, @user.
 function codeFormatText(input){
 	//var p = '%22';
 	var first = true;
@@ -314,6 +346,33 @@ function codeFormatText(input){
 			first1 = true;
 		}
 	}
+
+	// while (input.indexOf(" @") != -1){
+	// 	var m = input.indexOf(" @");
+	// 	var subInput = input.substr(m+1, input.length);
+	// 	//console.log(subInput);
+	// 	var q = subInput.indexOf(" ");
+	// 	var sname = subInput.substr(0,q);
+	// 	var urlname = subInput.substr(1, q);
+	// 	//console.log(m + ", " + q);
+	// 	//console.log(sname);
+
+	// 	$.ajax({
+	//     url: 'https://api.github.com/users/' + urlname,
+	//     dataType: "json",
+	//     success: function(data){
+	//       input = input.replace(sname, "<a href=\'https://github.com/" + urlname + "\'>"+ ".@" + urlname +"</a>");
+	//     },
+	//     error: function(data){
+	//       //do nothing
+	//     },
+	//     complete: function(data) {
+	//       //alert('complete')
+	//     }})
+
+
+
+	// }
 
 
 	//var x = input.indexOf("```");
