@@ -275,7 +275,7 @@ jQuery.fn.getSingleIssueJQ = function(owner, repoName, issueNumber) {
                 //console.log(this.user.avatar_url);
                 // list.append('</div></br>'+'</div>')
             }
-
+            $('#comments').getComments(data.comments_url);
     },
     error: function(data){
       $("#valid-user-icon").attr("src", "https://cdn4.iconfinder.com/data/icons/icocentre-free-icons/114/f-cross_256-128.png");
@@ -285,23 +285,30 @@ jQuery.fn.getSingleIssueJQ = function(owner, repoName, issueNumber) {
     }})
 }
 
-//fetches the comments and displays them TODO
-function getComments(commentURL){
+//fetches the comments and displays them 
+jQuery.fn.getComments= function(commentURL){
+
+	var target = this;
+	
 	$.ajax({
     url: commentURL,
     dataType: "json",
     success: function(data){
-      var list = $('comments');
+      var list = $('#comments');
+      target.empty().append(list);
+      console.log(data);
+      counterY = 0;
 
       $(data).each(function() {
-        	counterX++;
+        	counterY++;
         	var formattedBody = codeFormatText(this.body); 
-            if (this.name != (username.toLowerCase()+'.github.com')) {
-            	var trimmedBody = trimStringLength(formattedBody);
-            	list.append('<div class=\'card card-1\' style=\'margin:3em;\'><div class=\'row\' style=\'margin:0em;\'><div style=\'padding-left:0px;\' class=\"col-sm-3\"><a href=\''+this.user.html_url +'\'><img width=100% height=100% src=' + this.user.avatar_url +'></a></div><div class=\"col-sm-9\"><div id=\'target' + counterX + '\'></div>' + '</div></br>'+'</div></div>');
-                var targetDiv = "#target" + counterX;
+            if (true) {
+            	var d = new Date(this.updated_at);
+            	var trimmedBody = formattedBody;
+            	list.append('<div class=\'card card-1\' style=\'margin-bottom:3em;width:100%\'><div class=\'row\' style=\'margin:0em;\'><div style=\'padding-left:0px;\' class=\"col-sm-3\"><a href=\''+this.user.html_url +'\'><img width=100% height=100% src=' + this.user.avatar_url +'></a></div><div class=\"col-sm-9\"><div id=\'target' + counterY + '\'></div>' + '</div></br>'+'</div></div>');
+                var targetDiv = "#target" + counterY;
                 //console.log(targetDiv);
-                $(targetDiv).append('<div style=\'font-size:1.3em\'>'+ this.user.login +', <a href="'+ './issue.html?number=' + this.number + '&owner=' + username + '&repo=' + repoName +'">' +'#' + this.number + ": " + this.title + '</a> <em>'+(this.language?('('+this.language+')'):'')+'</em></div>');
+                $(targetDiv).append('<div style=\'font-size:1.3em\'>'+ this.user.login +', <a href=\''+this.html_url +'\'> ' +d.toLocaleDateString() + '</a> <em>'+(this.language?('('+this.language+')'):'')+'</em></div>');
                 
                 $(targetDiv).append('<br></br><div style=\'white-space:pre-wrap\'>' + trimmedBody + '</div>');
                 //console.log(this.user.avatar_url);
@@ -347,32 +354,38 @@ function codeFormatText(input){
 		}
 	}
 
-	// while (input.indexOf(" @") != -1){
-	// 	var m = input.indexOf(" @");
-	// 	var subInput = input.substr(m+1, input.length);
-	// 	//console.log(subInput);
-	// 	var q = subInput.indexOf(" ");
-	// 	var sname = subInput.substr(0,q);
-	// 	var urlname = subInput.substr(1, q);
-	// 	//console.log(m + ", " + q);
-	// 	//console.log(sname);
+	var failsafe = 0;
+	while (input.indexOf(" @") != -1 && failsafe <= 9){
+		failsafe++;
+		var m = input.indexOf(" @");
+		var subInput = input.substr(m+1, input.length);
+		//console.log(subInput);
+		var q = subInput.indexOf(" ");
+		var sname = subInput.substr(0,q);
+		var urlname = subInput.substr(1, q);
+		//console.log(m + ", " + q);
+		console.log(sname);
+		input = input.replace(sname, "<a href=\'https://github.com/" + urlname + "\'>"+ ".@" + urlname +"</a>");
 
-	// 	$.ajax({
-	//     url: 'https://api.github.com/users/' + urlname,
-	//     dataType: "json",
-	//     success: function(data){
-	//       input = input.replace(sname, "<a href=\'https://github.com/" + urlname + "\'>"+ ".@" + urlname +"</a>");
-	//     },
-	//     error: function(data){
-	//       //do nothing
-	//     },
-	//     complete: function(data) {
-	//       //alert('complete')
-	//     }})
+		// $.ajax({
+	 //    url: 'https://api.github.com/users/' + urlname,
+	 //    dataType: "json",
+	 //    success: function(data){
+	 //    	console.log("hit");
+	 //    	console.log(input.indexOf(sname));
+	 //    	input = input.replace("e", "wASBWE");
+	 //      	// input = input.replace(sname, "<a href=\'https://github.com/" + urlname + "\'>"+ ".@." + urlname +"</a>");
+	 //    },
+	 //    error: function(data){
+	 //      //do nothing
+	 //    },
+	 //    complete: function(data) {
+	 //      //alert('complete')
+	 //    }})
 
 
 
-	// }
+	}
 
 
 	//var x = input.indexOf("```");
