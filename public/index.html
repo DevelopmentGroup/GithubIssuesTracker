@@ -14,7 +14,7 @@
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-7s5uDGW3AHqw6xtJmNNtr+OBRJUlgkNJEo78P4b0yRw= sha512-nNo+yCHEyn0smMxSswnf/OnX6/KwJuZTlNZBjauKhTK0c+zT+q5JOCx0UFhXQ6rJR9jg6Es8gPuD2uZcYDLqSw==" crossorigin="anonymous">
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha256-KXn5puMvxCw+dAYznun+drMdG1IFl3agK0p/pqT9KAo= sha512-2e8qq0ETcfWRI4HJBzQiA3UoyFk6tbNyG+qSaIBZLyW9Xf3sWZHN/lxe9fTh1U45DpPf07yj94KsUHHWe4Yk1A==" crossorigin="anonymous"></script>
 
-  <!-- <link rel="stylesheet" href="css/styles.css?v=1.0"> -->
+  <link rel="stylesheet" href="css/custom.css">
   <!--[if lt IE 9]>
   <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
@@ -37,11 +37,11 @@
           <input type="text" placeholder="Repository Name" id="input-repo-name">
           </br>
           </br>
-          <div onclick="submitTargetRepo()">Track</div>
+          <a href="#"><div onclick="submitTargetRepo()">Track</div></a>
         </div>
       </form>
     </div>
-    <div class="col-md-8"><h1>TRACKER JACKER</h1><br><br><div id="back-button" onclick="getPreviousIssues()">Back</div><div id="next-button" onclick="getNextIssues()">Next</div><br><br><div id="issues-list"/></div></div>
+    <div class="col-md-8"><h1>TRACKER JACKER</h1><br><br><div><a href="#"><div id="back-button" onclick="getPreviousIssues()">Back</div></a><a href="#"><div id="next-button" onclick="getNextIssues()">Next</div></a></div><br><br><div id="issues-list"/></div></div>
     <div class="col-md-2"></div>
   </div>
   
@@ -51,15 +51,6 @@
 
 
   <script src="js/main.js"></script>
-
-  <!--<script type="text/javascript">
-    $(function() {
-        $("#issues-list").getAndDisplayIssues("npm", "npm");
-    });
-  </script>-->
-
-
-
 </body>
 
 </html>

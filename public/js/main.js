@@ -26,19 +26,22 @@ jQuery.fn.getAndDisplayIssues = function(username, repoName, pageNumber) {
      
         var list = $('<dl/>');
         target.empty().append(list);
+        counterX = 0;
         $(repos).each(function() {
+        	counterX++;
             if (this.name != (username.toLowerCase()+'.github.com')) {
-            	list.append('<dd><img width=50px height=50px src=' + this.user.avatar_url +'></dd>');
-                list.append('<dt><a href="'+ (this.homepage?this.homepage:this.html_url) +'">' + this.title + '</a> <em>'+(this.language?('('+this.language+')'):'')+'</em></dt>');
-                var trimmedBody = trimStringLength(this.body);
+            	var trimmedBody = trimStringLength(this.body);
+            	list.append('<div class=\'card card-1\'><div class=\'row\' style=\'margin:3em;\'><div style=\'\' class=\"col-sm-2\"><img width=75px height=75px src=' + this.user.avatar_url +'></div><div class=\"col-sm-10\"><div id=\'target' + counterX + '\'></div>' + '</div></br>'+'</div></div>');
+                var targetDiv = "#target" + counterX;
+                //console.log(targetDiv);
+                $(targetDiv).append('<a href="'+ (this.homepage?this.homepage:this.html_url) +'">' +'#' + this.number + ": " + this.title + '</a> <em>'+(this.language?('('+this.language+')'):'')+'</em>&nbsp;&nbsp;&nbsp;&nbsp;');
+                
                 for (var i = 0; i < this.labels.length; i++){
-                	list.append('<dd><span style=color:this.labels[i].color>label:' + this.labels[i].name + '</span></dd>');
+                	$(targetDiv).append('<span style=color:this.labels[i].color>label:' + this.labels[i].name + '</span>');
                 }
-                list.append('<dd>' + trimmedBody +'</dd>');
-                //list.append('<dd>' + this.updated_at + '</dd>');
-                list.append('<dd>#' + this.number + '</dd>');
+                $(targetDiv).append('<br>' + trimmedBody + '');
                 //console.log(this.user.avatar_url);
-                list.append('</br>');
+                // list.append('</div></br>'+'</div>')
             }
         });      
       });
@@ -129,9 +132,8 @@ jQuery.getUser = function(username, callback) {
     }})
 }
 
-
+//The two functions below will display the next or previous 30 issues.
 var currentPage = 1;
-
 function getNextIssues(){
 	$("#issues-list").getAndDisplayIssues(inputOwner, inputRepoName, currentPage + 1);
 	currentPage++;
@@ -140,4 +142,16 @@ function getNextIssues(){
 function getPreviousIssues(){
 	$("#issues-list").getAndDisplayIssues(inputOwner, inputRepoName, currentPage - 1);
 	currentPage--;
+}
+
+
+//This function parses variables from the URL
+$.urlParam = function(name){
+    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    if (results==null){
+       return null;
+    }
+    else{
+       return results[1] || 0;
+    }
 }
