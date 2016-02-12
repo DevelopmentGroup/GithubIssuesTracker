@@ -84,11 +84,14 @@ jQuery.fn.getAndDisplayIssues = function(username, repoName, pageNumber) {
     } 
 };
 
+
+var inputOwner = "";
+var inputRepoName = "";
 //calls getAndDisplayIssues with parameters pulled from the data input fields "input-owner" and "input-repo-name"
 function submitTargetRepo(){
 	console.log("ran");
-	var inputOwner = $("#input-owner").val();
-	var inputRepoName = $("#input-repo-name").val();
+	inputOwner = $("#input-owner").val();
+	inputRepoName = $("#input-repo-name").val();
 	console.log(inputOwner);
 	$("#issues-list").getAndDisplayIssues(inputOwner, inputRepoName, 1);
 }
@@ -124,4 +127,17 @@ jQuery.getUser = function(username, callback) {
     complete: function(data) {
       //alert('complete')
     }})
+}
+
+
+var currentPage = 1;
+
+function getNextIssues(){
+	$("#issues-list").getAndDisplayIssues(inputOwner, inputRepoName, currentPage + 1);
+	currentPage++;
+}
+
+function getPreviousIssues(){
+	$("#issues-list").getAndDisplayIssues(inputOwner, inputRepoName, currentPage - 1);
+	currentPage--;
 }
