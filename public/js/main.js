@@ -181,10 +181,10 @@ jQuery.getUser = function(username, callback) {
     url: 'https://api.github.com/users/' + username,
     dataType: "json",
     success: function(data){
-      $("#valid-user-icon").attr("src", "https://cdn0.iconfinder.com/data/icons/weboo-2/512/tick.png");
+      $("#valid-user-icon").attr("src", "./images/check.png");
     },
     error: function(data){
-      $("#valid-user-icon").attr("src", "https://cdn4.iconfinder.com/data/icons/icocentre-free-icons/114/f-cross_256-128.png");
+      $("#valid-user-icon").attr("src", "./images/x.png");
     },
     complete: function(data) {
       //alert('complete')
